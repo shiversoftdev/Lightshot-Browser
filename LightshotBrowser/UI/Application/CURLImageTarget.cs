@@ -55,6 +55,7 @@ namespace LightshotBrowser.UI.Application
                 try
                 {
                     webBrowser1.Visible = true;
+                    invokeId = MainForm.RequestId;
                     webBrowser1.Navigate(new Uri(url));
                 }
                 catch { }
@@ -71,6 +72,7 @@ namespace LightshotBrowser.UI.Application
 
         private void WebBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            if (invokeId != MainForm.RequestId) return;
             webBrowser1.Document.Body.MouseDown += Body_MouseDown;
             foreach (HtmlElement image in webBrowser1.Document.GetElementsByTagName("img").OfType<HtmlElement>())
             {
@@ -98,17 +100,16 @@ namespace LightshotBrowser.UI.Application
             WantedURL = url;
             WantedDelay = delay;
             webBrowser1.Visible = false;
-            PictureContent.Visible = false;            
+            PictureContent.Visible = false;
         }
 
         public void Load()
         {
-            invokeId++;
-            var cached = invokeId;
+            var cached = MainForm.RequestId;
             new Task(() =>
             {
                 System.Threading.Thread.Sleep(WantedDelay);
-                if (invokeId == cached)
+                if (cached == MainForm.RequestId)
                 {
                     Invoke(DelayUpdate, WantedURL);
                 }

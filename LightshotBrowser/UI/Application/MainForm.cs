@@ -16,6 +16,7 @@ namespace LightshotBrowser
 {
     public partial class MainForm : Form, IThemeableControl
     {
+        public static int RequestId { get; private set; }
         private string CurrentTarget = "";
         private const string Charset = "0123456789abcdefghijklmnopqrstuvwxyz";
         private List<CURLImageTarget> ImageTargets = new List<CURLImageTarget>();
@@ -87,6 +88,7 @@ namespace LightshotBrowser
         private void LoadNewImageTarget()
         {
             urlText.Text = $"https://prnt.sc/{CurrentTarget}";
+            RequestId++;
             var index = 0;
             foreach(var target in ImageTargets)
             {
