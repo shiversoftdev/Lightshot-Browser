@@ -84,7 +84,7 @@ namespace LightshotBrowser
             var index = 0;
             foreach(var target in ImageTargets)
             {
-                target.SetImageTarget($"https://prnt.sc/{OffsetCurrentTarget(index++)}", index * 150);
+                target.SetImageTarget($"https://prnt.sc/{OffsetCurrentTarget(index++)}", index * 1000);
             }
         }
 
