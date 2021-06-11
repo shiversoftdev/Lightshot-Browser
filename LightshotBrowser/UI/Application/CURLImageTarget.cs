@@ -21,7 +21,10 @@ namespace LightshotBrowser.UI.Application
         private BoxUpdater DelayUpdate;
         private string CurrentSelectedUrl = null;
         private string WantedURL = null;
+        private int WantedDelay = 0;
         private int invokeId = 0;
+
+        public CURLImageTarget Next;
         public CURLImageTarget()
         {
             InitializeComponent();
@@ -74,6 +77,7 @@ namespace LightshotBrowser.UI.Application
                 if (image.Id == "screenshot-image")
                 {
                     UpdateBox?.Invoke(image.GetAttribute("src"));
+                    Next?.Load();
                     break;
                 }
             }
@@ -91,27 +95,24 @@ namespace LightshotBrowser.UI.Application
 
         public void SetImageTarget(string url, int delay)
         {
+            WantedURL = url;
+            WantedDelay = delay;
+            webBrowser1.Visible = false;
+            PictureContent.Visible = false;            
+        }
+
+        public void Load()
+        {
             invokeId++;
             var cached = invokeId;
-            WantedURL = url;
-            try
+            new Task(() =>
             {
-                webBrowser1.Visible = false;
-                PictureContent.Visible = false;
-                new Task(() => 
+                System.Threading.Thread.Sleep(WantedDelay);
+                if (invokeId == cached)
                 {
-                    System.Threading.Thread.Sleep(delay);
-                    if(invokeId == cached)
-                    {
-                        Invoke(DelayUpdate, url);
-                    }
-                }).Start();
-            }
-            catch
-            {
-                PictureContent.Image = PictureContent.ErrorImage;
-            }
-            
+                    Invoke(DelayUpdate, WantedURL);
+                }
+            }).Start();
         }
     }
 }

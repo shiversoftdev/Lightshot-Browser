@@ -28,12 +28,18 @@ namespace LightshotBrowser
             MinimizeBox = true;
             cBorderedForm1.TitleBarTitle = "Serious' Lightshot Browser";
 
+            CURLImageTarget prev = null;
             // populate image targets
-            for(int r = 0; r < TableContents.RowCount; r++)
+            for (int r = 0; r < TableContents.RowCount; r++)
             {
                 for(int c = 0; c < TableContents.ColumnCount; c++)
                 {
                     CURLImageTarget target = new CURLImageTarget();
+                    if(prev != null)
+                    {
+                        prev.Next = target;
+                    }
+                    prev = target;
                     target.Dock = DockStyle.Fill;
                     TableContents.Controls.Add(target, c, r);
                     ImageTargets.Add(target);
@@ -84,8 +90,9 @@ namespace LightshotBrowser
             var index = 0;
             foreach(var target in ImageTargets)
             {
-                target.SetImageTarget($"https://prnt.sc/{OffsetCurrentTarget(index++)}", index * 1000);
+                target.SetImageTarget($"https://prnt.sc/{OffsetCurrentTarget(index++)}", 0);
             }
+            ImageTargets[0].Load();
         }
 
         private string OffsetCurrentTarget(int offset)
